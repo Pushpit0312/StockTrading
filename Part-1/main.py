@@ -100,19 +100,19 @@ REPLICATION_MANAGEMENT_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS ReplicationMan
 dc.create_table(conn, REPLICATION_MANAGEMENT_TABLE_QUERY)
 
 # Function calls to insert data in the tables:
-di.insert_users_csv(conn)
-
-di.insert_accounts_csv(conn)
-
-di.insert_marketdata_csv(conn)
-
+# di.insert_users_csv(conn)
+#
+# di.insert_accounts_csv(conn)
+#
+# di.insert_marketdata_csv(conn)
+#
 di.insert_stock_price_history_csv(conn)
-
-di.insert_orders_data_csv(conn)
-
-di.insert_portfolio_data(conn)
-
-# Function calls for data retrival:
+#
+# di.insert_orders_data_csv(conn)
+#
+# di.insert_portfolio_data(conn)
+#
+# # Function calls for data retrival:
 dr.select_all(conn, USERS_TABLE)
 dr.select_all(conn, ACCOUNTS_TABLE)
 dr.select_all(conn,PORTFOLIO_TABLE)

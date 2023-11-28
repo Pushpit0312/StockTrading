@@ -117,7 +117,7 @@ def insert_portfolio_data(conn):
     # Read data from CSV file
     cursor = conn.cursor(buffered=True)
     try:
-        ordersQuery = "SELECT * FROM ORDERS;"
+        ordersQuery = "SELECT * FROM Orders;"
         cursor.execute(ordersQuery)
         records = cursor.fetchall()
         for record in records:

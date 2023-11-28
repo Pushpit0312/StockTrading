@@ -4,9 +4,11 @@ import partitionDataInsertion as pdi
 import partitionDataRetrieval as pdr
 
 # Database details
-HOST = "localhost"
+# Database details
+HOST = ""
+PORT = 3307
 USERNAME = "root"
-PASSWORD = "pushpit123"
+PASSWORD = "root"
 DATABASE = "pvs_stock_trading"
 
 USERS_TABLE = "Users"
@@ -18,7 +20,7 @@ STOCK_PRICE_HISTORICAL_DATA_TABLE = "StockPriceHistory"
 REPLICATION_MANAGEMENT_TABLE = "ReplicationManagement"
 
 # Connecting to database and creating the database:
-conn = connection.create_connection(HOST, USERNAME, PASSWORD, DATABASE)
+conn = connection.create_connection(USERNAME, PASSWORD, HOST, PORT, DATABASE)
 
 # Modifying tables to implement Vertical and Horizontal Partitioning:
 # Creating two sub-tables of Users table, UsersBasic and UsersSensitive as a part of Vertical Partitioning:

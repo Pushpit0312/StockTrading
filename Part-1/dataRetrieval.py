@@ -5,8 +5,8 @@ def select_all(conn, table):
     cursor = conn.cursor()
 
     try:
-        selectQuery = "SELECT * FROM %s LIMIT 10;"      # Limiting search result to 10 for display purposes.
-        cursor.execute(selectQuery, [table])
+        selectQuery = f"SELECT * FROM {table} LIMIT 10;"  # Limiting search result to 10 for display purposes.
+        cursor.execute(selectQuery)
 
         records = cursor.fetchall()
         print(f"{table} table data:")
@@ -43,7 +43,7 @@ def select_specific_account(conn, accountId):
 def select_user_portfolio(conn, userId):
     cursor = conn.cursor()
     try:
-        selectUserPortfolioQuery = ("SELECT * FROM PortfolioData WHERE PortfolioID = (SELECT PortfolioID FROM Users "
+        selectUserPortfolioQuery = ("SELECT * FROM PortfolioData WHERE PortfolioID = (SELECT PortfolioID FROM Accounts "
                                     "WHERE UserId = %s);")
         cursor.execute(selectUserPortfolioQuery, [userId])
 
@@ -63,9 +63,9 @@ def select_user_portfolio(conn, userId):
 def select_buy_orders(conn, stock, orderType, amount):
     cursor = conn.cursor()
     try:
-        selectOrdersQuery = "SELECT * FROM Orders WHERE StockSymbol = %s and OrderType = %s and Amount >= %s;"
+        selectOrdersQuery = "SELECT * FROM Orders WHERE StockSymbol = %s and OrderType = %s and Amount >= %s LIMIT 10;"
         cursor.execute(selectOrdersQuery, [stock, orderType, amount])
-        
+
         print(f"{orderType} order details for {stock} stock with amount greater than {amount}:")
         records = cursor.fetchall()
         for record in records:
@@ -101,7 +101,7 @@ def select_market_data(conn, stock):
 def select_stock_prices_history(conn, stock, start, end):
     cursor = conn.cursor()
     try:
-        selectStockHistoryQuery = "SELECT * FROM StockPriceHistory WHERE StockSymbol = %s AND RecordedDateTime BETWEEN %s AND %s;"
+        selectStockHistoryQuery = "SELECT * FROM StockPriceHistory WHERE StockSymbol = %s AND RecordedDateTime BETWEEN %s AND %s LIMIT 10;"
         cursor.execute(selectStockHistoryQuery, [stock, start, end])
 
         print(f"Stock price history for {stock} between {start} and {end}")
@@ -112,4 +112,6 @@ def select_stock_prices_history(conn, stock, start, end):
 
     except Error as e:
         print(f"Error fetch stock price history for {stock}: {e}")
-        
+
+    finally:
+        cursor.close()

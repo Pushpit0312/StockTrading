@@ -4,10 +4,11 @@ import initialDataInsertion as di
 import dataRetrieval as dr
 
 # Database details
-HOST = "localhost"
+HOST = ""
+PORT = 3307
 USERNAME = "root"
-PASSWORD = "pushpit123"
-DATABASE = "PVS_Stock_Trading"
+PASSWORD = "root"
+DATABASE = "pvs_stock_trading"
 
 USERS_TABLE = "Users"
 ACCOUNTS_TABLE = "Accounts"
@@ -18,7 +19,7 @@ STOCK_PRICE_HISTORICAL_DATA_TABLE = "StockPriceHistory"
 REPLICATION_MANAGEMENT_TABLE = "ReplicationManagement"
 
 # Connecting to database and creating the database:
-conn = connection.create_connection(HOST, USERNAME, PASSWORD)
+conn = connection.create_connection(USERNAME, PASSWORD, HOST, PORT)
 dc.create_database(conn, DATABASE)
 
 # All tables queries and function calls to create tables:
@@ -31,9 +32,9 @@ USERS_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS Users ("
                      "Password VARCHAR(255) NOT NULL,"
                      "PhoneNumber VARCHAR(15),"
                      "Address TEXT,"
-                     "RegistrationDate DATETIME,"
+                     "RegistrationDate TIMESTAMP,"
                      "Region VARCHAR(255) NOT NULL,"
-                     "LastLogin DATETIME);")
+                     "LastLogin TIMESTAMP);")
 dc.create_table(conn, USERS_TABLE_QUERY)
 
 ACCOUNTS_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS Accounts ("
@@ -41,7 +42,7 @@ ACCOUNTS_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS Accounts ("
                         "PortfolioID INT,"
                         "UserID INT NOT NULL,"
                         "AccountType VARCHAR(50),"
-                        "Balance DECIMAL(10, 2),"
+                        "Balance FLOAT(10, 2),"
                         "AccountStatus VARCHAR(50),"
                         "UNIQUE (PortfolioID),"
                         "FOREIGN KEY (UserID) REFERENCES Users(UserID));")
@@ -51,49 +52,49 @@ PORTFOLIO_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS PortfolioData ("
                          "PortfolioID INT NOT NULL,"
                          "StockSymbol VARCHAR(10) NOT NULL,"
                          "Quantity INT NOT NULL,"
-                         "TotalAmount DECIMAL(10, 2) NOT NULL,"
+                         "TotalAmount FLOAT(10, 2) NOT NULL,"
                          "FOREIGN KEY (PortfolioID) REFERENCES Accounts(PortfolioID),"
                          "PRIMARY KEY (PortfolioID, StockSymbol));")
 dc.create_table(conn, PORTFOLIO_TABLE_QUERY)
 
 ORDERS_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS Orders ("
-                      "OrderID INT AUTO_INCREMENT PRIMARY KEY,"
+                      "OrderID INT AUTO_INCREMENT,"
                       "AccountID INT NOT NULL,"
                       "StockSymbol VARCHAR(10) NOT NULL,"
                       "OrderType VARCHAR(10) NOT NULL,"
                       "Quantity INT NOT NULL,"
-                      "OrderPrice DECIMAL(10, 2) NOT NULL,"
-                      "Amount DECIMAL(10, 2),"
+                      "OrderPrice FLOAT(10, 2) NOT NULL,"
+                      "Amount FLOAT(10, 2),"
                       "OrderStatus VARCHAR(50) NOT NULL,"
-                      "OrderDate DATETIME NOT NULL,"
-                      "FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID));")
+                      "OrderDate TIMESTAMP NOT NULL,"
+                      "PRIMARY KEY (OrderID, AccountID, OrderType));")
 dc.create_table(conn, ORDERS_TABLE_QUERY)
 
 MARKET_DATA_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS MarketData ("
                            "StockSymbol VARCHAR(10) PRIMARY KEY,"
                            "StockName VARCHAR(255),"
-                           "CurrentPrice DECIMAL(10, 2),"
-                           "OpeningPrice DECIMAL(10, 2),"
-                           "PrevClosingPrice DECIMAL(10, 2),"
-                           "High DECIMAL(10, 2),"
-                           "Low DECIMAL(10, 2),"
+                           "CurrentPrice FLOAT(10, 2),"
+                           "OpeningPrice FLOAT(10, 2),"
+                           "PrevClosingPrice FLOAT(10, 2),"
+                           "High FLOAT(10, 2),"
+                           "Low FLOAT(10, 2),"
                            "Volume BIGINT,"
-                           "LastUpdated DATETIME);")
+                           "LastUpdated TIMESTAMP);")
 dc.create_table(conn, MARKET_DATA_TABLE_QUERY)
 
 STOCK_PRICE_HISTORICAL_DATA_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS StockPriceHistory ("
-                                           "HistoryID INT AUTO_INCREMENT PRIMARY KEY,"
+                                           "HistoryID INT AUTO_INCREMENT,"
                                            "StockSymbol VARCHAR(10),"
-                                           "Price DECIMAL(10, 2),"
-                                           "RecordedDateTime DATETIME,"
-                                           "FOREIGN KEY (StockSymbol) REFERENCES MarketData(StockSymbol));")
+                                           "Price FLOAT(10, 2),"
+                                           "RecordedDateTime TIMESTAMP,"
+                                           "PRIMARY KEY (HistoryId, StockSymbol));")
 dc.create_table(conn, STOCK_PRICE_HISTORICAL_DATA_TABLE_QUERY)
 
 REPLICATION_MANAGEMENT_TABLE_QUERY = ("CREATE TABLE IF NOT EXISTS ReplicationManagement ("
                                       "ReplicationID INT AUTO_INCREMENT PRIMARY KEY,"
                                       "TableName VARCHAR(255),"
                                       "ReplicationStatus VARCHAR(50),"
-                                      "LastReplicated DATETIME,"
+                                      "LastReplicated TIMESTAMP,"
                                       "ReplicationNode VARCHAR(255),"
                                       "ChangeLog TEXT);")
 dc.create_table(conn, REPLICATION_MANAGEMENT_TABLE_QUERY)
@@ -128,4 +129,3 @@ dr.select_buy_orders(conn, "TCS", "buy", 10000)
 dr.select_market_data(conn, "GOOGL")
 
 dr.select_stock_prices_history(conn, "AAPL", "2023-11-13 9:00:00", "2023-11-13 9:01:00")
-

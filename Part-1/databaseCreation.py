@@ -38,4 +38,7 @@ def create_table(conn, tableQuery):
         for row in results:
             print(row)
     except Error as e:
-        print(f"Error creating table: {e}")
+        print(f"Error creating table {tableQuery}: {e}")
+
+    finally:
+        cursor.close()
